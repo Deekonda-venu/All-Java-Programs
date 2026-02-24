@@ -8,7 +8,7 @@ In this repository, I am solving various Java logical and number-based problems 
 
 Basic Java programs
 
-Number programs (Armstrong, Fibonacci, Generic Root, etc.)
+Number programs 
 
 Logical problem solving
 
