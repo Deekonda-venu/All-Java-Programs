@@ -58,7 +58,7 @@ public class Basics {
     public static void main(String[] args) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-
+            System.out.println("Connection driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testdb", "root", "root");
 
             System.out.println("Connection established");
