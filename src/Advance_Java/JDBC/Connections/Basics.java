@@ -54,6 +54,57 @@ import java.sql.Statement;
 //👉 Helps to create connection
 //
 //DriverManager.getConnection()
+
+
+
+
+
+//
+//    2. Statement Types
+//🔹 1. Statement
+//
+//👉 For static SQL
+//
+//Statement stmt = con.createStatement();
+//
+//✔ Simple
+//❌ Not secure
+//❌ SQL Injection risk
+//
+//🔹 2. PreparedStatement ⭐ (IMPORTANT)
+//
+//        👉 For dynamic queries
+//
+//PreparedStatement ps = con.prepareStatement(
+//        "INSERT INTO user VALUES (?, ?)"
+//);
+//
+//✔ Prevents SQL Injection
+//✔ Faster (precompiled)
+//✔ Used in real projects
+//
+//🔹 3. CallableStatement
+//
+//👉 Used for Stored Procedures
+//
+//CallableStatement cs = con.prepareCall("{call myProcedure()}");
+//
+//✔ Less commonly used
+
+
+
+//executeQuery vs executeUpdate
+//Query Type	Method	Return Type
+//SELECT	executeQuery()	ResultSet
+//INSERT	executeUpdate()	int
+//UPDATE	executeUpdate()	int
+//DELETE	executeUpdate()	int
+
+
+//Flow (Very Important)
+//SELECT → executeQuery() → ResultSet → rs.next()
+//INSERT/UPDATE/DELETE → executeUpdate() → int (rows)
+//
 public class Basics {
     public static void main(String[] args) {
         try {
