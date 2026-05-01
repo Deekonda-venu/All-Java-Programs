@@ -14,7 +14,7 @@ public class pracrice {
             Class.forName("com.mysql.cj.jdbc.Driver");
             System.out.println("Driver loaded");
 
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testdb", "root", "root@123");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/testdb", "root", "root");
 
             System.out.println("Connection established");
 
