@@ -1,0 +1,404 @@
+# ADVANCE JAVA SERVLET NOTES
+
+## 1. Introduction To Advance Java
+
+### What is Advance Java?
+Advance Java is the next level after Core Java, focusing on enterprise and web application development. While Core Java covers basic programming concepts, Advance Java deals with network programming, web technologies, and enterprise-level applications.
+
+### Key Components of Advance Java:
+- **Servlets**: Server-side Java programs that handle HTTP requests
+- **JSP (JavaServer Pages)**: Server-side technology for creating dynamic web pages
+- **EJB (Enterprise JavaBeans)**: Server-side components for enterprise applications
+- **JDBC (Java Database Connectivity)**: Database connectivity and operations
+- **JNDI (Java Naming and Directory Interface)**: Directory services
+- **JMS (Java Messaging Service)**: Message-oriented middleware
+- **JTA (Java Transaction API)**: Transaction management
+- **JavaMail**: Email functionality
+
+### Why Servlets?
+Servlets are the foundation of Java web development. They:
+- Run on a web server (like Apache Tomcat)
+- Process HTTP requests from clients
+- Generate dynamic responses
+- Maintain state across multiple requests
+- Integrate with databases and other enterprise systems
+
+### Architecture:
+```
+Client (Browser) → HTTP Request → Web Server → Servlet Container → Servlet
+                                                    ↓
+Client ← HTTP Response ← Web Server ← Servlet Container ← Servlet
+```
+
+### Advantages of Servlets:
+- Platform independent (Write Once, Run Anywhere)
+- Robust and secure (Java's security features)
+- Scalable (can handle multiple requests simultaneously)
+- Persistent (can maintain state between requests)
+- Integration with Java ecosystem (databases, APIs, frameworks)
+
+## 2. Installation
+
+### Required Software:
+
+#### 1. Java Development Kit (JDK)
+- **Version**: JDK 8 or higher (recommended JDK 11 or 17)
+- **Download**: Oracle JDK or OpenJDK from official websites
+- **Installation**:
+  - Windows: Run installer and follow setup wizard
+  - Mac: Use Homebrew: `brew install openjdk`
+  - Linux: Use package manager: `sudo apt install openjdk-11-jdk`
+- **JAVA_HOME**: Set environment variable pointing to JDK installation directory
+
+#### 2. Apache Tomcat Server
+- **Version**: Tomcat 9.0 or 10.0 (recommended)
+- **Download**: https://tomcat.apache.org/
+- **Requirements**: Java 8+ for Tomcat 9, Java 11+ for Tomcat 10
+- **Port**: Default port 8080 (can be changed)
+
+#### 3. Integrated Development Environment (IDE)
+**Options:**
+- **Eclipse IDE for Enterprise Java Developers**: Free, servlet-friendly
+- **IntelliJ IDEA Ultimate**: Paid, excellent servlet support
+- **NetBeans**: Free, good for Java EE development
+- **VS Code**: Free, with Java extensions
+
+#### 4. Web Browser
+- Chrome, Firefox, Safari, or Edge
+- Developer tools for debugging
+
+#### 5. Build Tools (Optional but Recommended)
+- **Apache Maven**: Dependency management and project building
+- **Gradle**: Alternative build tool
+
+### Verification:
+After installation, verify:
+```bash
+java -version          # Check Java version
+javac -version         # Check Java compiler
+echo $JAVA_HOME        # Check JAVA_HOME environment variable
+```
+
+## 3. Server Setup
+
+### Apache Tomcat Setup - Detailed Instructions:
+
+#### Step 1: Download Tomcat
+1. Visit https://tomcat.apache.org/
+2. Download appropriate version (Tomcat 9.0 recommended for beginners)
+3. Choose "Core" distribution (zip or tar.gz)
+
+#### Step 2: Extract Tomcat
+**Windows:**
+- Extract to C:\Tomcat (or any location without spaces)
+- Avoid extracting to Program Files (permission issues)
+
+**Mac/Linux:**
+- Extract to /usr/local/tomcat or ~/tomcat
+- Use: `tar -xzf apache-tomcat-9.0.xx.tar.gz`
+
+#### Step 3: Set Environment Variables
+**Windows:**
+```cmd
+CATALINA_HOME=C:\Tomcat
+PATH=%PATH%;%CATALINA_HOME%\bin
+```
+
+**Mac/Linux:**
+```bash
+export CATALINA_HOME=/usr/local/tomcat
+export PATH=$PATH:$CATALINA_HOME/bin
+```
+Add to ~/.bashrc or ~/.zshrc for persistence
+
+#### Step 4: Configure Tomcat
+**Key Configuration Files:**
+- `conf/server.xml`: Main server configuration
+- `conf/web.xml`: Default web application settings
+- `conf/tomcat-users.xml`: User authentication
+
+**Default Port:**
+- HTTP: 8080
+- HTTPS: 8443
+- AJP: 8009
+- Shutdown: 8005
+
+#### Step 5: Start Tomcat
+**Windows:**
+- Run `startup.bat` from bin directory
+- Or install as Windows service
+
+**Mac/Linux:**
+- Run `./startup.sh` from bin directory
+- Or use: `catalina.sh start`
+
+#### Step 6: Verify Installation
+1. Open browser
+2. Visit: http://localhost:8080
+3. You should see Tomcat welcome page
+
+#### Step 7: Deploy Applications
+**Deployment Options:**
+- Copy WAR file to webapps directory
+- Use Tomcat Manager (web interface)
+- Use IDE deployment tools
+
+### Troubleshooting Common Issues:
+
+#### Port Already in Use:
+- Change port in `conf/server.xml`
+- Find process using port: `netstat -ano | findstr :8080`
+
+#### Permission Denied:
+- Check directory permissions
+- Run as administrator (Windows) or use sudo (Linux)
+
+#### JAVA_HOME Not Set:
+- Verify JAVA_HOME points to JDK, not JRE
+- Check environment variables
+- Restart terminal after setting variables
+
+#### Memory Issues:
+- Increase heap size in `catalina.sh` or `catalina.bat`
+- Example: `export CATALINA_OPTS="-Xms512m -Xmx1024m"`
+
+## 4. How To Create Servlet
+
+### Complete Step-by-Step Guide:
+
+#### Step 1: Create Dynamic Web Project
+**In Eclipse:**
+1. File → New → Dynamic Web Project
+2. Enter project name (e.g., "ServletDemo")
+3. Target runtime: Select Apache Tomcat
+4. Configuration: Default configuration
+5. Click Finish
+
+**In IntelliJ:**
+1. File → New → Project
+2. Select Java Enterprise
+3. Choose Web application
+4. Select application server (Tomcat)
+5. Click Create
+
+#### Step 2: Project Structure
+```
+ServletDemo/
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/example/
+│       │       └── MyServlet.java
+│       └── webapp/
+│           ├── WEB-INF/
+│           │   ├── web.xml
+│           │   └── lib/
+│           └── index.html
+└── pom.xml (if using Maven)
+```
+
+#### Step 3: Create Servlet Class
+**Basic Servlet Structure:**
+```java
+package com.example;
+
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class MyServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Handle GET request
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Handle POST request
+    }
+}
+```
+
+#### Step 4: Configure Servlet
+**Method 1: web.xml (Traditional)**
+```xml
+<servlet>
+    <servlet-name>MyServlet</servlet-name>
+    <servlet-class>com.example.MyServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>MyServlet</servlet-name>
+    <url-pattern>/myservlet</url-pattern>
+</servlet-mapping>
+```
+
+**Method 2: Annotations (Modern)**
+```java
+@WebServlet("/myservlet")
+public class MyServlet extends HttpServlet {
+    // Servlet code
+}
+```
+
+#### Step 5: Add Dependencies
+**Maven (pom.xml):**
+```xml
+<dependencies>
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>4.0.1</version>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+```
+
+#### Step 6: Build and Deploy
+**Manual Deployment:**
+1. Build project (compile Java files)
+2. Create WAR file
+3. Copy WAR to Tomcat's webapps directory
+4. Tomcat automatically deploys
+
+**IDE Deployment:**
+1. Right-click project → Run As → Run on Server
+2. Select Tomcat server
+3. IDE handles deployment automatically
+
+#### Step 7: Test Servlet
+1. Start Tomcat server
+2. Open browser
+3. Access: http://localhost:8080/ProjectName/myservlet
+4. Verify response
+
+### Key Points to Remember:
+- Servlets must extend HttpServlet or GenericServlet
+- Always override doGet() or doPost() methods
+- Set content type before writing response
+- Handle exceptions properly
+- Use proper package structure
+- Configure URL mapping correctly
+- Test with different HTTP methods
+
+## 5. Running Project
+1. Start Tomcat server
+2. Deploy your web application
+3. Open browser and access: http://localhost:8080/YourProject/YourServlet
+
+## 6. WEB-INF is Secured
+- WEB-INF directory contains private files
+- Files in WEB-INF cannot be accessed directly from browser
+- Contains web.xml, classes, lib folders
+- Provides security for application resources
+
+## 7. Serving HTML Page
+Servlets can generate HTML content:
+- Set response content type to "text/html"
+- Use PrintWriter to write HTML
+- Mix Java code with HTML tags
+
+## 8. We Need To Run Java Code
+- Servlets allow server-side Java execution
+- Process business logic on server
+- Connect to databases
+- Perform calculations and data processing
+
+## 9. Creating Generic Servlet
+- GenericServlet is protocol-independent
+- Implements Servlet interface
+- Must override service() method
+- Less commonly used than HttpServlet
+
+## 10. Send Response to Client
+- Use ServletResponse object
+- Set content type
+- Get PrintWriter
+- Write content to client
+
+## 11. Get and Post Request
+GET Request:
+- Data sent in URL
+- Limited data size
+- Can be bookmarked
+- Less secure
+
+POST Request:
+- Data sent in request body
+- Larger data size
+- Cannot be bookmarked
+- More secure
+
+## 12. Handling Get and Post Request
+- Override doGet() for GET requests
+- Override doPost() for POST requests
+- Use service() to handle both
+- Check request method if needed
+
+## 13. Using HttpServlet
+- Extends GenericServlet
+- Protocol-specific (HTTP)
+- Provides doGet(), doPost(), etc.
+- Most commonly used servlet type
+
+## 14. Have A Look on HttpServlet API
+Key Methods:
+- doGet() - handle GET requests
+- doPost() - handle POST requests
+- init() - initialize servlet
+- destroy() - cleanup servlet
+- service() - handle all requests
+
+## 15. Serving HTML Page From Servlet
+- Generate complete HTML pages
+- Include CSS and JavaScript
+- Use proper HTML structure
+- Handle form submissions
+
+## 16. Dynamic Response
+- Generate content based on user input
+- Database-driven content
+- Time-based content
+- User-specific content
+
+## 17. Fake Credit Card Number Generator
+Example of dynamic content generation:
+- Generate random numbers
+- Apply Luhn algorithm
+- Format as credit card numbers
+- Educational purposes only
+
+## 18. Servlet Life Cycle
+Three main methods:
+1. init() - called once when servlet is created
+2. service() - called for each request
+3. destroy() - called once when servlet is removed
+
+## 19. Servlet Life Cycle Details
+init():
+- Called by container
+- Initialize resources
+- Load configuration
+- Called only once
+
+service():
+- Handles client requests
+- Calls doGet/doPost
+- Multiple calls possible
+- Main processing logic
+
+destroy():
+- Cleanup resources
+- Close connections
+- Save state
+- Called before removal
+
+## 20. Best Practices
+- Use proper exception handling
+- Close database connections
+- Avoid hardcoding values
+- Use connection pooling
+- Follow MVC pattern
+- Validate user input
+- Use proper logging
